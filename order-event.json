@@ -1,0 +1,15 @@
+{
+  "eventType": "order.created",
+  "orderId": "${orderId}",
+  "customerId": "${customerId}",
+  "items": [
+    {
+      "sku": "PROD-001",
+      "quantity": 2,
+      "price": 29.99
+    }
+  ],
+  "total": 59.98,
+  "currency": "USD"
+}
+

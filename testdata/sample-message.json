@@ -1,0 +1,11 @@
+{
+  "type": "test",
+  "user": "${user}",
+  "environment": "${env}",
+  "timestamp": "${timestamp}",
+  "data": {
+    "message": "Hello from Pub/Sub TUI!",
+    "value": 42
+  }
+}
+
