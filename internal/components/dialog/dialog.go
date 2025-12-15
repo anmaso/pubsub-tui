@@ -3,7 +3,7 @@ package dialog
 import (
 	"strings"
 
-	"pubsub-tui/internal/components/common"
+	"github.com/anmaso/pubsub-tui/internal/components/common"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/lipgloss"

@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	"pubsub-tui/internal/components/common"
-	"pubsub-tui/internal/components/publisher"
-	"pubsub-tui/internal/components/subscriber"
-	"pubsub-tui/internal/components/subscriptions"
-	"pubsub-tui/internal/components/topics"
+	"github.com/anmaso/pubsub-tui/internal/components/common"
+	"github.com/anmaso/pubsub-tui/internal/components/publisher"
+	"github.com/anmaso/pubsub-tui/internal/components/subscriber"
+	"github.com/anmaso/pubsub-tui/internal/components/subscriptions"
+	"github.com/anmaso/pubsub-tui/internal/components/topics"
 
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"

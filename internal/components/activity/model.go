@@ -1,7 +1,7 @@
 package activity
 
 import (
-	"pubsub-tui/internal/components/common"
+	"github.com/anmaso/pubsub-tui/internal/components/common"
 
 	"github.com/charmbracelet/bubbles/viewport"
 )

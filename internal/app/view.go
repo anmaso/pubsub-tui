@@ -3,7 +3,7 @@ package app
 import (
 	"strings"
 
-	"pubsub-tui/internal/components/common"
+	"github.com/anmaso/pubsub-tui/internal/components/common"
 
 	"github.com/charmbracelet/lipgloss"
 )

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"pubsub-tui/internal/components/common"
+	"github.com/anmaso/pubsub-tui/internal/components/common"
 )
 
 // View renders the topics panel

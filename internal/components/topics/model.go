@@ -1,8 +1,8 @@
 package topics
 
 import (
-	"pubsub-tui/internal/components/common"
-	"pubsub-tui/internal/utils"
+	"github.com/anmaso/pubsub-tui/internal/components/common"
+	"github.com/anmaso/pubsub-tui/internal/utils"
 
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textinput"
@@ -37,16 +37,16 @@ func (t TopicItem) FilterValue() string { return t.name }
 
 // Model represents the state of the topics panel
 type Model struct {
-	list        list.Model
-	filterInput textinput.Model
-	createInput textinput.Model
-	allTopics   []common.TopicData // All topics from GCP
-	width       int
-	height      int
-	focused     bool
-	mode        Mode
-	filterText  string
-	filterError error
+	list          list.Model
+	filterInput   textinput.Model
+	createInput   textinput.Model
+	allTopics     []common.TopicData // All topics from GCP
+	width         int
+	height        int
+	focused       bool
+	mode          Mode
+	filterText    string
+	filterError   error
 	loading       bool
 	loadError     error
 	statusMsg     string

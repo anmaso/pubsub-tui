@@ -1,4 +1,4 @@
-module pubsub-tui
+module github.com/anmaso/pubsub-tui
 
 go 1.21
 

@@ -1,8 +1,8 @@
 package subscriber
 
 import (
-	"pubsub-tui/internal/components/common"
-	"pubsub-tui/internal/pubsub"
+	"github.com/anmaso/pubsub-tui/internal/components/common"
+	"github.com/anmaso/pubsub-tui/internal/pubsub"
 
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"

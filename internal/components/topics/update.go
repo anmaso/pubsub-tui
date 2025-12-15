@@ -1,7 +1,7 @@
 package topics
 
 import (
-	"pubsub-tui/internal/components/common"
+	"github.com/anmaso/pubsub-tui/internal/components/common"
 
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"

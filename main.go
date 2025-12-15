@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"pubsub-tui/internal/app"
-	"pubsub-tui/internal/pubsub"
+	"github.com/anmaso/pubsub-tui/internal/app"
+	"github.com/anmaso/pubsub-tui/internal/pubsub"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -49,4 +49,3 @@ func main() {
 		os.Exit(1)
 	}
 }
-

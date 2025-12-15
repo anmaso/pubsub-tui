@@ -1,8 +1,8 @@
 package subscriptions
 
 import (
-	"pubsub-tui/internal/components/common"
-	"pubsub-tui/internal/utils"
+	"github.com/anmaso/pubsub-tui/internal/components/common"
+	"github.com/anmaso/pubsub-tui/internal/utils"
 
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textinput"
