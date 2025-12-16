@@ -1,0 +1,14 @@
+{
+    "specversion": "1.0",
+    "type": "com.redhat.hyperfleet.cluster.reconcile.v1",
+    "source": "/hyperfleet/service/sentinel",
+    "id": "00000000-0000-0000-0000-000000000000",
+    "time": "2025-10-23T12:00:00Z",
+    "datacontenttype": "application/json",
+    "data": {
+        "id": "2n738s25u1tf2tn4vnf8oetb5h9dfj89",
+        "kind": "Cluster",
+        "href": "https://api.hyperfleet.com/v1/clusters/11111111-1111-1111-1111-111111111111/nodepools/22222222-2222-2222-2222-222222222222",
+        "generation": 1
+    }
+}

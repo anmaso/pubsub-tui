@@ -18,7 +18,7 @@ func (m Model) View() string {
 	}
 
 	// Calculate dimensions for split view
-	contentWidth := m.width - 4 // borders
+	contentWidth := m.width - 4   // borders
 	contentHeight := m.height - 4 // borders + status
 
 	leftWidth := contentWidth * 40 / 100
@@ -39,9 +39,9 @@ func (m Model) View() string {
 	// Join panels with separator
 	separator := strings.Repeat("│\n", contentHeight)
 	separator = strings.TrimSuffix(separator, "\n")
-	
+
 	separatorStyle := lipgloss.NewStyle().Foreground(common.ColorTextMuted)
-	
+
 	mainContent := lipgloss.JoinHorizontal(
 		lipgloss.Top,
 		leftContent,

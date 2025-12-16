@@ -49,7 +49,8 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 	case common.SubscriptionSelectedMsg:
 		m.SetSubscription(msg.SubscriptionName, msg.TopicName)
-		return m, nil
+		// Start the spinner
+		return m, m.spinner.Tick
 
 	case common.SubscriptionStoppedMsg:
 		m.ClearSubscription()
@@ -58,6 +59,15 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 	// Pass other messages to sub-components
 	var cmd tea.Cmd
+
+	// Update spinner if connected
+	if m.connected {
+		m.spinner, cmd = m.spinner.Update(msg)
+		if cmd != nil {
+			cmds = append(cmds, cmd)
+		}
+	}
+
 	m.detailView, cmd = m.detailView.Update(msg)
 	if cmd != nil {
 		cmds = append(cmds, cmd)

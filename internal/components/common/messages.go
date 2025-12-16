@@ -148,4 +148,3 @@ type StopSubscriptionMsg struct{}
 
 // SubscriptionStoppedMsg is sent when the subscription has been stopped
 type SubscriptionStoppedMsg struct{}
-

@@ -72,4 +72,3 @@ type ProjectNotFoundError struct{}
 func (e *ProjectNotFoundError) Error() string {
 	return "GCP project ID not found. Set GOOGLE_CLOUD_PROJECT or configure gcloud."
 }
-

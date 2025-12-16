@@ -40,4 +40,3 @@ func PrettyPrint(v interface{}) (string, error) {
 	}
 	return string(data), nil
 }
-

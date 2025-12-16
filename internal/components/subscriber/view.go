@@ -26,7 +26,7 @@ func (m Model) View() string {
 
 	// Calculate dimensions for split view
 	// Left: 40%, Right: 60% (matches Publisher panel)
-	contentWidth := m.width - 4 // borders
+	contentWidth := m.width - 4   // borders
 	contentHeight := m.height - 5 // borders + header + filter
 
 	leftWidth := contentWidth * 40 / 100
@@ -38,13 +38,21 @@ func (m Model) View() string {
 		rightWidth = 15
 	}
 
-	// Build header line with auto-ack status
+	// Build header line with auto-ack status and spinner
 	var header strings.Builder
 	autoAckStatus := "[ ] auto-ack"
 	if m.autoAck {
 		autoAckStatus = "[✓] auto-ack"
 	}
 	header.WriteString(common.MutedText.Render(autoAckStatus + " (A)"))
+
+	// Add spinner when connected
+	if m.connected {
+		header.WriteString("  ")
+		header.WriteString(m.spinner.View())
+		header.WriteString(" ")
+		header.WriteString(common.LogNetworkStyle.Render("listening"))
+	}
 
 	// Build left panel (message list)
 	leftContent := m.buildLeftPanel(leftWidth, contentHeight)
@@ -55,9 +63,9 @@ func (m Model) View() string {
 	// Join panels with separator
 	separator := strings.Repeat("│\n", contentHeight)
 	separator = strings.TrimSuffix(separator, "\n")
-	
+
 	separatorStyle := lipgloss.NewStyle().Foreground(common.ColorTextMuted)
-	
+
 	mainContent := lipgloss.JoinHorizontal(
 		lipgloss.Top,
 		leftContent,
@@ -103,7 +111,7 @@ func (m Model) buildLeftPanel(width, height int) string {
 			content.WriteString("\n")
 		}
 	} else if m.MessageCount() == 0 {
-		placeholder := common.MutedText.Render("Waiting...")
+		placeholder := m.spinner.View() + " " + common.MutedText.Render("Waiting for messages...")
 		content.WriteString(placeholder)
 		// Pad placeholder
 		for i := 0; i < height-2; i++ {

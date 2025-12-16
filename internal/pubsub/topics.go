@@ -109,4 +109,3 @@ func validateResourceID(id string) error {
 
 	return nil
 }
-

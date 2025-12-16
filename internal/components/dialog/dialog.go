@@ -212,4 +212,3 @@ func (m *Model) UpdateInput(msg interface{}) {
 		m.input, _ = m.input.Update(msg)
 	}
 }
-

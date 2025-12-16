@@ -28,9 +28,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 		// Check if any panel has an active input field
-		inputActive := m.topics.IsInputActive() || 
-			m.subscriptions.IsInputActive() || 
-			m.publisher.IsInputActive() || 
+		inputActive := m.topics.IsInputActive() ||
+			m.subscriptions.IsInputActive() ||
+			m.publisher.IsInputActive() ||
 			m.subscriber.IsInputActive()
 
 		// Global key handling
@@ -152,11 +152,15 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		// Update subscriptions panel with active subscription
 		m.subscriptions.SetActiveSubscription(msg.SubscriptionName)
 
-		// Update subscriber (this clears previous messages)
-		m.subscriber.SetSubscription(msg.SubscriptionName, msg.TopicName)
+		// Update subscriber - pass message through Update to start spinner
+		var cmd tea.Cmd
+		m.subscriber, cmd = m.subscriber.Update(msg)
+		if cmd != nil {
+			cmds = append(cmds, cmd)
+		}
 
 		// Start subscription stream
-		cmd := m.startSubscription(msg.SubscriptionName, msg.TopicName)
+		cmd = m.startSubscription(msg.SubscriptionName, msg.TopicName)
 		if cmd != nil {
 			cmds = append(cmds, cmd)
 		}
@@ -324,6 +328,16 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 	default:
+		// Always update subscriber if connected (for spinner animation)
+		// even when not focused
+		if m.subscriber.IsConnected() && m.focus != FocusSubscriber {
+			var cmd tea.Cmd
+			m.subscriber, cmd = m.subscriber.Update(msg)
+			if cmd != nil {
+				cmds = append(cmds, cmd)
+			}
+		}
+
 		// Route to focused component
 		cmd := m.routeToFocused(msg)
 		if cmd != nil {
@@ -481,7 +495,7 @@ func (m *Model) updateComponentSizes() {
 	// Topics and Publisher are aligned at 33%
 	topicsHeight := availableHeight * 33 / 100
 	publisherHeight := topicsHeight // Same height as topics
-	
+
 	subsHeight := availableHeight * 33 / 100
 	activityHeight := availableHeight - topicsHeight - subsHeight
 	subscriberHeight := availableHeight - publisherHeight

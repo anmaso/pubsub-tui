@@ -38,25 +38,25 @@ func (s SubscriptionItem) Title() string {
 	if nameWidth < 10 {
 		nameWidth = 10
 	}
-	
+
 	// Add active indicator
 	prefix := "  "
 	if s.active {
 		prefix = "● "
 	}
-	
+
 	name := s.name
 	maxNameLen := nameWidth - len(prefix) - 2
 	if len(name) > maxNameLen {
 		name = name[:maxNameLen-3] + "..."
 	}
-	
+
 	// Pad name to fixed width
 	fullName := prefix + name
 	for len(fullName) < nameWidth {
 		fullName += " "
 	}
-	
+
 	return fullName + "→ " + s.topicName
 }
 func (s SubscriptionItem) Description() string { return "" }
@@ -64,17 +64,17 @@ func (s SubscriptionItem) FilterValue() string { return s.name }
 
 // Model represents the state of the subscriptions panel
 type Model struct {
-	list             list.Model
-	filterInput      textinput.Model
-	createInput      textinput.Model
-	allSubscriptions []common.SubscriptionData // All subscriptions from GCP
-	width            int
-	height           int
-	focused          bool
-	mode             Mode
-	filterText       string // Current regex filter
-	filterError      error
-	selectedTopic    string // Topic filter (from topic selection)
+	list               list.Model
+	filterInput        textinput.Model
+	createInput        textinput.Model
+	allSubscriptions   []common.SubscriptionData // All subscriptions from GCP
+	width              int
+	height             int
+	focused            bool
+	mode               Mode
+	filterText         string // Current regex filter
+	filterError        error
+	selectedTopic      string // Topic filter (from topic selection)
 	loading            bool
 	loadError          error
 	statusMsg          string
@@ -151,7 +151,7 @@ func (m *Model) SetSize(width, height int) {
 	}
 
 	m.list.SetSize(width-4, listHeight)
-	
+
 	// Refresh items to update column widths
 	if len(m.allSubscriptions) > 0 {
 		m.applyFilter()

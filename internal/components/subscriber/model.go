@@ -9,6 +9,7 @@ import (
 	"github.com/anmaso/pubsub-tui/internal/utils"
 
 	"github.com/charmbracelet/bubbles/list"
+	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
 )
@@ -50,6 +51,7 @@ type Model struct {
 	messageList list.Model
 	filterInput textinput.Model
 	detailView  viewport.Model
+	spinner     spinner.Model
 
 	messages        []*pubsub.ReceivedMessage
 	selectedMessage *pubsub.ReceivedMessage
@@ -58,10 +60,10 @@ type Model struct {
 	height  int
 	focused bool
 
-	filtering  bool
-	filterText string
+	filtering   bool
+	filterText  string
 	filterError error
-	autoAck    bool
+	autoAck     bool
 
 	subscriptionName string
 	topicName        string
@@ -86,7 +88,7 @@ func New() Model {
 	ml.SetShowHelp(false)
 	ml.SetFilteringEnabled(false)
 	ml.DisableQuitKeybindings()
-	
+
 	// Customize status bar styles
 	ml.Styles.StatusBar = common.MutedText
 	ml.Styles.StatusEmpty = common.MutedText
@@ -101,10 +103,16 @@ func New() Model {
 	// Create detail viewport
 	dv := viewport.New(0, 0)
 
+	// Create spinner
+	sp := spinner.New()
+	sp.Spinner = spinner.Dot
+	sp.Style = common.LogNetworkStyle // Blue color for network activity
+
 	return Model{
 		messageList: ml,
 		filterInput: fi,
 		detailView:  dv,
+		spinner:     sp,
 		messages:    make([]*pubsub.ReceivedMessage, 0, 100),
 	}
 }

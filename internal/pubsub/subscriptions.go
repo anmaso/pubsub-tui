@@ -103,4 +103,3 @@ func (c *Client) DeleteSubscription(ctx context.Context, subscriptionID string) 
 
 	return nil
 }
-

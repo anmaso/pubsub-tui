@@ -25,4 +25,3 @@ func VerifyCredentials() error {
 
 	return nil
 }
-

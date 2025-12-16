@@ -148,16 +148,16 @@ func (m Model) renderHelpOverlay(baseView string) string {
 		"Ctrl+d/u    Scroll message detail up/down",
 		"",
 	}
-	
+
 	// Join content
 	contentText := strings.Join(helpLines, "\n")
-	
+
 	// Style for the content
 	contentStyle := lipgloss.NewStyle().
 		Width(66).
 		Foreground(common.ColorPrimary).
 		Background(lipgloss.Color("#0a0a0a"))
-	
+
 	// Title
 	titleStyle := lipgloss.NewStyle().
 		Width(66).
@@ -165,28 +165,28 @@ func (m Model) renderHelpOverlay(baseView string) string {
 		Foreground(common.ColorPrimary).
 		Background(lipgloss.Color("#0a0a0a")).
 		Bold(true)
-	
+
 	// Footer
 	footerStyle := lipgloss.NewStyle().
 		Width(66).
 		Align(lipgloss.Center).
 		Foreground(common.ColorPrimary).
 		Background(lipgloss.Color("#0a0a0a"))
-	
+
 	// Build the complete content
 	fullContent := titleStyle.Render("PUBSUB-TUI HELP") + "\n" +
 		contentStyle.Render(contentText) + "\n" +
 		footerStyle.Render("Press any key to close")
-	
+
 	// Apply border around everything
 	helpBox := lipgloss.NewStyle().
 		Border(lipgloss.RoundedBorder()).
 		BorderForeground(common.ColorPrimary).
 		Background(lipgloss.Color("#0a0a0a")).
 		Padding(0, 1)
-	
+
 	styledHelpBox := helpBox.Render(fullContent)
-	
+
 	// Use Place to overlay on the base view with dimmed background
 	return lipgloss.Place(
 		m.width,

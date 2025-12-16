@@ -92,4 +92,3 @@ func HasUnsubstitutedVariables(content string) bool {
 	re := regexp.MustCompile(`\$\{[a-zA-Z_][a-zA-Z0-9_]*\}`)
 	return re.MatchString(content)
 }
-

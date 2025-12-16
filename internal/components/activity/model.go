@@ -77,4 +77,3 @@ func (m *Model) updateContent() {
 func (m Model) EntryCount() int {
 	return len(m.entries)
 }
-

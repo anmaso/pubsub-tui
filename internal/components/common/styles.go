@@ -44,7 +44,7 @@ var (
 func BorderedPanel(title string, content string, focused bool, width, height int) string {
 	borderColor := ColorTextMuted
 	titleColor := ColorTextMuted
-	
+
 	if focused {
 		borderColor = ColorPrimary
 		titleColor = ColorPrimary
@@ -70,7 +70,7 @@ func BorderedPanel(title string, content string, focused bool, width, height int
 	// Build top border with title
 	styledTitle := titleStyle.Render(" " + title + " ")
 	titleLen := lipgloss.Width(styledTitle)
-	
+
 	remainingWidth := innerWidth - titleLen
 	if remainingWidth < 0 {
 		remainingWidth = 0
@@ -81,10 +81,10 @@ func BorderedPanel(title string, content string, focused bool, width, height int
 		rightPad = 0
 	}
 
-	topBorder := topLeft + 
-		repeatString(horizontal, leftPad) + 
-		styledTitle + 
-		repeatString(horizontal, rightPad) + 
+	topBorder := topLeft +
+		repeatString(horizontal, leftPad) +
+		styledTitle +
+		repeatString(horizontal, rightPad) +
 		topRight
 
 	// Build bottom border
@@ -92,7 +92,7 @@ func BorderedPanel(title string, content string, focused bool, width, height int
 
 	// Process content lines
 	contentLines := strings.Split(content, "\n")
-	
+
 	// Calculate inner height (subtract 2 for top/bottom borders)
 	innerHeight := height - 2
 	if innerHeight < 1 {
@@ -258,4 +258,3 @@ func GetLogStyle(level LogLevel) lipgloss.Style {
 		return LogInfoStyle
 	}
 }
-

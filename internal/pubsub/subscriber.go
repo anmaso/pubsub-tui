@@ -165,4 +165,3 @@ func (c *Client) SubscriptionExists(ctx context.Context, subscriptionName string
 	sub := c.client.Subscription(subscriptionName)
 	return sub.Exists(ctx)
 }
-
