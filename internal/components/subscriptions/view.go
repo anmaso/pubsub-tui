@@ -73,7 +73,7 @@ func (m Model) View() string {
 		}
 
 	default:
-		// Show status or help
+		// Show status or active filter
 		if m.statusMsg != "" {
 			style := common.LogSuccessStyle
 			if m.statusError {
@@ -84,11 +84,6 @@ func (m Model) View() string {
 			filterDisplay := common.FilterPromptStyle.Render("/ ") +
 				common.FilterInputStyle.Render(m.filterText)
 			content.WriteString(filterDisplay)
-		} else if m.activeSubscription != "" {
-			// Show stop hint when there's an active subscription
-			content.WriteString(common.MutedText.Render("Enter: stop  / filter  n new  d delete"))
-		} else {
-			content.WriteString(common.MutedText.Render("Enter: start  / filter  n new  d delete"))
 		}
 	}
 

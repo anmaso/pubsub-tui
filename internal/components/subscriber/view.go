@@ -82,9 +82,7 @@ func (m Model) View() string {
 		}
 	} else if m.filterText != "" {
 		footer = common.FilterPromptStyle.Render("/ ") + common.FilterInputStyle.Render(m.filterText)
-	} else if m.connected {
-		footer = common.MutedText.Render("/ filter  a ack  A auto-ack  ctrl+d/u scroll")
-	} else {
+	} else if !m.connected {
 		footer = common.MutedText.Render("Select a subscription to start")
 	}
 

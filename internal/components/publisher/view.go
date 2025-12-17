@@ -57,10 +57,6 @@ func (m Model) View() string {
 			style = common.LogErrorStyle
 		}
 		status = style.Render(m.status)
-	} else if m.focusArea == FocusVariables {
-		status = common.MutedText.Render("Enter: publish  Esc: exit  Tab: files")
-	} else {
-		status = common.MutedText.Render("Enter: publish  v: variables  j/k: navigate")
 	}
 
 	fullContent := mainContent + "\n" + status
