@@ -120,8 +120,9 @@ func (m Model) handleNavigation(msg tea.KeyMsg) (Model, tea.Cmd) {
 				// Move to next message after acknowledging
 				m.messageList.CursorDown()
 				m.UpdateSelection()
+				msgID := msg.ID
 				return m, func() tea.Msg {
-					return common.Info("Acknowledged message: " + msg.ID[:8] + "...")
+					return common.Info("Acknowledged message: " + truncateID(msgID))
 				}
 			}
 		}
@@ -203,4 +204,12 @@ var keys = keyMap{
 		key.WithKeys("ctrl+d"),
 		key.WithHelp("ctrl+d", "scroll detail down"),
 	),
+}
+
+// truncateID safely truncates a message ID for display
+func truncateID(id string) string {
+	if len(id) <= 8 {
+		return id
+	}
+	return id[:8] + "..."
 }

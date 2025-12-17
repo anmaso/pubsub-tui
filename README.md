@@ -96,6 +96,54 @@ gcloud services enable pubsub.googleapis.com
 Your user/service account needs these IAM roles:
 - `roles/pubsub.editor` (or individual permissions)
 
+## Using the Pub/Sub Emulator
+
+For local development and testing, you can use the Google Cloud Pub/Sub emulator instead of connecting to real GCP resources. The application automatically detects when the emulator is configured and adjusts its behavior accordingly (no GCP authentication required).
+
+### 1. Start the Emulator
+
+```bash
+# Install the emulator component (one-time)
+gcloud components install pubsub-emulator
+
+# Start the emulator
+gcloud beta emulators pubsub start --host-port=localhost:8085
+```
+
+### 2. Configure Environment Variables
+
+In a new terminal, set the required environment variables:
+
+```bash
+# Point to the emulator (required)
+export PUBSUB_EMULATOR_HOST=localhost:8085
+
+# Set a project ID (required - can be any string for the emulator)
+export GOOGLE_CLOUD_PROJECT=local-project
+```
+
+Or use the helper command to get the environment variables:
+
+```bash
+$(gcloud beta emulators pubsub env-init)
+export GOOGLE_CLOUD_PROJECT=local-project
+```
+
+### 3. Run the Application
+
+```bash
+./pubsub-tui
+```
+
+The application will display a message indicating it's connecting to the emulator.
+
+### Emulator Notes
+
+- Topics and subscriptions created in the emulator are ephemeral and lost when the emulator stops
+- No GCP credentials or permissions are required
+- The emulator supports most Pub/Sub operations but may have some limitations compared to the real service
+- Useful for testing message flows without incurring GCP costs
+
 ## Usage
 
 ### Starting the Application
