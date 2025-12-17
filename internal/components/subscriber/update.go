@@ -108,6 +108,15 @@ func (m Model) handleFilterInput(msg tea.KeyMsg) (Model, tea.Cmd) {
 // handleNavigation handles keyboard input in normal mode
 func (m Model) handleNavigation(msg tea.KeyMsg) (Model, tea.Cmd) {
 	switch {
+	case key.Matches(msg, keys.Stop):
+		// Stop active subscription
+		if m.connected {
+			return m, func() tea.Msg {
+				return common.StopSubscriptionMsg{}
+			}
+		}
+		return m, nil
+
 	case key.Matches(msg, keys.Filter):
 		m.filtering = true
 		m.filterInput.Focus()
@@ -166,6 +175,7 @@ func (m Model) handleNavigation(msg tea.KeyMsg) (Model, tea.Cmd) {
 
 // Key bindings
 type keyMap struct {
+	Stop       key.Binding
 	Filter     key.Binding
 	Ack        key.Binding
 	AutoAck    key.Binding
@@ -176,6 +186,10 @@ type keyMap struct {
 }
 
 var keys = keyMap{
+	Stop: key.NewBinding(
+		key.WithKeys("esc"),
+		key.WithHelp("esc", "stop"),
+	),
 	Filter: key.NewBinding(
 		key.WithKeys("/"),
 		key.WithHelp("/", "filter"),

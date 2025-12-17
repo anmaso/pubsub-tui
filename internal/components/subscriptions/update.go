@@ -203,6 +203,15 @@ func (m Model) handleNavigation(msg tea.KeyMsg) (Model, tea.Cmd) {
 	m.ClearStatus()
 
 	switch {
+	case key.Matches(msg, keys.Stop):
+		// Stop active subscription
+		if m.activeSubscription != "" {
+			return m, func() tea.Msg {
+				return common.StopSubscriptionMsg{}
+			}
+		}
+		return m, nil
+
 	case key.Matches(msg, keys.Filter):
 		// Enter filter mode
 		m.mode = ModeFilter
@@ -269,6 +278,7 @@ func (m Model) handleNavigation(msg tea.KeyMsg) (Model, tea.Cmd) {
 
 // Key bindings
 type keyMap struct {
+	Stop        key.Binding
 	Filter      key.Binding
 	ClearFilter key.Binding
 	Create      key.Binding
@@ -279,6 +289,10 @@ type keyMap struct {
 }
 
 var keys = keyMap{
+	Stop: key.NewBinding(
+		key.WithKeys("esc"),
+		key.WithHelp("esc", "stop"),
+	),
 	Filter: key.NewBinding(
 		key.WithKeys("/"),
 		key.WithHelp("/", "filter"),

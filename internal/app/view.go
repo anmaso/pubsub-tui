@@ -125,6 +125,12 @@ func (m Model) getPanelShortcuts() []string {
 		)
 
 	case FocusSubscriptions:
+		// Show Esc:stop only when there's an active subscription
+		if m.subscriptions.GetActiveSubscription() != "" {
+			shortcuts = append(shortcuts,
+				common.FooterKeyStyle.Render("Esc")+common.FooterDescStyle.Render(":stop"),
+			)
+		}
 		shortcuts = append(shortcuts,
 			common.FooterKeyStyle.Render("↑↓")+common.FooterDescStyle.Render(":nav"),
 			common.FooterKeyStyle.Render("Enter")+common.FooterDescStyle.Render(":start/stop"),
@@ -141,6 +147,12 @@ func (m Model) getPanelShortcuts() []string {
 		)
 
 	case FocusSubscriber:
+		// Show Esc:stop only when connected
+		if m.subscriber.IsConnected() {
+			shortcuts = append(shortcuts,
+				common.FooterKeyStyle.Render("Esc")+common.FooterDescStyle.Render(":stop"),
+			)
+		}
 		shortcuts = append(shortcuts,
 			common.FooterKeyStyle.Render("↑↓")+common.FooterDescStyle.Render(":nav"),
 			common.FooterKeyStyle.Render("a")+common.FooterDescStyle.Render(":ack"),
