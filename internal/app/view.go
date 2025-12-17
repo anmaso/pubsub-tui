@@ -54,15 +54,21 @@ func (m Model) View() string {
 	return baseView
 }
 
-// renderFooter renders the application footer
+// renderFooter renders the application footer with dynamic shortcuts based on focused panel
 func (m Model) renderFooter() string {
 	var parts []string
 
-	// Help text
-	parts = append(parts, common.FooterKeyStyle.Render("1-4")+common.FooterDescStyle.Render(": panels"))
-	parts = append(parts, common.FooterKeyStyle.Render("Tab")+common.FooterDescStyle.Render(": cycle"))
-	parts = append(parts, common.FooterKeyStyle.Render("?")+common.FooterDescStyle.Render(": help"))
-	parts = append(parts, common.FooterKeyStyle.Render("q")+common.FooterDescStyle.Render(": quit"))
+	// Global shortcuts (always shown)
+	parts = append(parts, common.FooterKeyStyle.Render("Tab")+common.FooterDescStyle.Render(":cycle"))
+	parts = append(parts, common.FooterKeyStyle.Render("?")+common.FooterDescStyle.Render(":help"))
+	parts = append(parts, common.FooterKeyStyle.Render("q")+common.FooterDescStyle.Render(":quit"))
+
+	// Panel-specific shortcuts
+	panelShortcuts := m.getPanelShortcuts()
+	if len(panelShortcuts) > 0 {
+		parts = append(parts, common.FooterDescStyle.Render("│"))
+		parts = append(parts, panelShortcuts...)
+	}
 
 	// Subscription status
 	var statusInfo string
@@ -76,7 +82,7 @@ func (m Model) renderFooter() string {
 		common.FooterProjectStyle.Render(m.projectID)
 
 	// Build footer line
-	helpText := strings.Join(parts, common.FooterDescStyle.Render(" │ "))
+	helpText := strings.Join(parts, " ")
 
 	// Calculate spacing
 	helpLen := lipgloss.Width(helpText)
@@ -101,6 +107,49 @@ func (m Model) renderFooter() string {
 	}
 
 	return common.FooterStyle.Render(footer)
+}
+
+// getPanelShortcuts returns shortcuts specific to the currently focused panel
+func (m Model) getPanelShortcuts() []string {
+	var shortcuts []string
+
+	switch m.focus {
+	case FocusTopics:
+		shortcuts = append(shortcuts,
+			common.FooterKeyStyle.Render("↑↓")+common.FooterDescStyle.Render(":nav"),
+			common.FooterKeyStyle.Render("Enter")+common.FooterDescStyle.Render(":select"),
+			common.FooterKeyStyle.Render("n")+common.FooterDescStyle.Render(":new"),
+			common.FooterKeyStyle.Render("d")+common.FooterDescStyle.Render(":delete"),
+			common.FooterKeyStyle.Render("/")+common.FooterDescStyle.Render(":filter"),
+		)
+
+	case FocusSubscriptions:
+		shortcuts = append(shortcuts,
+			common.FooterKeyStyle.Render("↑↓")+common.FooterDescStyle.Render(":nav"),
+			common.FooterKeyStyle.Render("Enter")+common.FooterDescStyle.Render(":start/stop"),
+			common.FooterKeyStyle.Render("n")+common.FooterDescStyle.Render(":new"),
+			common.FooterKeyStyle.Render("d")+common.FooterDescStyle.Render(":delete"),
+			common.FooterKeyStyle.Render("/")+common.FooterDescStyle.Render(":filter"),
+		)
+
+	case FocusPublisher:
+		shortcuts = append(shortcuts,
+			common.FooterKeyStyle.Render("↑↓")+common.FooterDescStyle.Render(":nav"),
+			common.FooterKeyStyle.Render("Enter")+common.FooterDescStyle.Render(":publish"),
+			common.FooterKeyStyle.Render("v")+common.FooterDescStyle.Render(":vars"),
+		)
+
+	case FocusSubscriber:
+		shortcuts = append(shortcuts,
+			common.FooterKeyStyle.Render("↑↓")+common.FooterDescStyle.Render(":nav"),
+			common.FooterKeyStyle.Render("a")+common.FooterDescStyle.Render(":ack"),
+			common.FooterKeyStyle.Render("A")+common.FooterDescStyle.Render(":auto-ack"),
+			common.FooterKeyStyle.Render("/")+common.FooterDescStyle.Render(":filter"),
+			common.FooterKeyStyle.Render("^d/^u")+common.FooterDescStyle.Render(":scroll"),
+		)
+	}
+
+	return shortcuts
 }
 
 // renderHelpOverlay renders the help dialog as an overlay on top of the base view
