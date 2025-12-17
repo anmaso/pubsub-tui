@@ -18,24 +18,7 @@ A Terminal User Interface (TUI) for managing Google Cloud Pub/Sub resources, bui
 
 ## Screenshots
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│ Topics              │ Publisher                                  │
-│ • my-topic-1        │ File: order-event.json                     │
-│ • my-topic-2        │ Target: my-topic-1                         │
-│ • test-topic        │ Variables: env=prod user=alice             │
-│                     │ Status: Published (msg-id: abc123)         │
-├─────────────────────┼────────────────────────────────────────────┤
-│ Subscriptions       │ Subscriber                                 │
-│ • sub-1 → topic-1   │ Messages: 5                                │
-│ • sub-2 → topic-2   │ ✓ msg-abc123... 12:34:56                  │
-│                     │   msg-def456... 12:35:01                   │
-├─────────────────────┤   msg-ghi789... 12:35:05                   │
-│ Activity Log        │ Auto-ack: [x] enabled                      │
-│ [12:34:56] Started  │                                            │
-│ [12:35:00] Published│                                            │
-└─────────────────────┴────────────────────────────────────────────┘
-```
+![pubsub-tui](./docs/pubsub-tui.png)
 
 ## Installation
 
