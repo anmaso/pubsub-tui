@@ -77,6 +77,15 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		return m, nil
 	}
 
+	// Update spinner if loading
+	if m.loading {
+		var cmd tea.Cmd
+		m.spinner, cmd = m.spinner.Update(msg)
+		if cmd != nil {
+			cmds = append(cmds, cmd)
+		}
+	}
+
 	// Pass other messages to the list
 	var cmd tea.Cmd
 	m.list, cmd = m.list.Update(msg)

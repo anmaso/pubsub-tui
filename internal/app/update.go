@@ -338,6 +338,26 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		}
 
+		// Always update topics if loading (for spinner animation)
+		// even when not focused
+		if m.topics.IsLoading() && m.focus != FocusTopics {
+			var cmd tea.Cmd
+			m.topics, cmd = m.topics.Update(msg)
+			if cmd != nil {
+				cmds = append(cmds, cmd)
+			}
+		}
+
+		// Always update subscriptions if loading (for spinner animation)
+		// even when not focused
+		if m.subscriptions.IsLoading() && m.focus != FocusSubscriptions {
+			var cmd tea.Cmd
+			m.subscriptions, cmd = m.subscriptions.Update(msg)
+			if cmd != nil {
+				cmds = append(cmds, cmd)
+			}
+		}
+
 		// Route to focused component
 		cmd := m.routeToFocused(msg)
 		if cmd != nil {

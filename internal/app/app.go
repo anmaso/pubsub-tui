@@ -74,6 +74,8 @@ func (m Model) Init() tea.Cmd {
 		m.loadTopics(),
 		m.loadSubscriptions(),
 		publisher.LoadFiles(),
+		m.topics.SpinnerTickCmd(),
+		m.subscriptions.SpinnerTickCmd(),
 		func() tea.Msg {
 			return common.Info("Application started")
 		},

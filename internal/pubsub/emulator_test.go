@@ -102,21 +102,21 @@ func TestGetProjectID_EmulatorMode(t *testing.T) {
 	}()
 
 	tests := []struct {
-		name           string
-		emulatorHost   string
-		gcpProject     string
-		gcloudProject  string
-		pubsubProject  string
-		wantProject    string
-		wantErr        bool
+		name            string
+		emulatorHost    string
+		gcpProject      string
+		gcloudProject   string
+		pubsubProject   string
+		wantProject     string
+		wantErr         bool
 		wantEmulatorErr bool
 	}{
 		{
-			name:          "emulator mode with GOOGLE_CLOUD_PROJECT",
-			emulatorHost:  "localhost:8085",
-			gcpProject:    "my-test-project",
-			wantProject:   "my-test-project",
-			wantErr:       false,
+			name:         "emulator mode with GOOGLE_CLOUD_PROJECT",
+			emulatorHost: "localhost:8085",
+			gcpProject:   "my-test-project",
+			wantProject:  "my-test-project",
+			wantErr:      false,
 		},
 		{
 			name:          "emulator mode with GCLOUD_PROJECT",
@@ -133,9 +133,9 @@ func TestGetProjectID_EmulatorMode(t *testing.T) {
 			wantErr:       false,
 		},
 		{
-			name:           "emulator mode without project - should error",
-			emulatorHost:   "localhost:8085",
-			wantErr:        true,
+			name:            "emulator mode without project - should error",
+			emulatorHost:    "localhost:8085",
+			wantErr:         true,
 			wantEmulatorErr: true,
 		},
 		{
@@ -232,4 +232,3 @@ func TestProjectNotFoundError(t *testing.T) {
 		}
 	})
 }
-

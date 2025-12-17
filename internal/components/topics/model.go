@@ -5,7 +5,9 @@ import (
 	"github.com/anmaso/pubsub-tui/internal/utils"
 
 	"github.com/charmbracelet/bubbles/list"
+	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/textinput"
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 // Mode represents the current mode of the topics panel
@@ -40,6 +42,7 @@ type Model struct {
 	list          list.Model
 	filterInput   textinput.Model
 	createInput   textinput.Model
+	spinner       spinner.Model
 	allTopics     []common.TopicData // All topics from GCP
 	width         int
 	height        int
@@ -86,10 +89,16 @@ func New() Model {
 	ci.TextStyle = common.FilterInputStyle
 	ci.CharLimit = 255
 
+	// Create spinner
+	sp := spinner.New()
+	sp.Spinner = spinner.Dot
+	sp.Style = common.LogNetworkStyle // Blue color for network activity
+
 	return Model{
 		list:        l,
 		filterInput: fi,
 		createInput: ci,
+		spinner:     sp,
 		loading:     true,
 		mode:        ModeNormal,
 	}
@@ -197,6 +206,11 @@ func (m Model) GetSelectedTopic() string {
 // IsInputActive returns whether an input field is active
 func (m Model) IsInputActive() bool {
 	return m.mode == ModeFilter || m.mode == ModeCreate
+}
+
+// SpinnerTickCmd returns the spinner tick command
+func (m Model) SpinnerTickCmd() tea.Cmd {
+	return m.spinner.Tick
 }
 
 // applyFilter filters the topics based on current filter text

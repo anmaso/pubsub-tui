@@ -59,6 +59,7 @@ func (m Model) renderFooter() string {
 	var parts []string
 
 	// Global shortcuts (always shown)
+	parts = append(parts, common.FooterKeyStyle.Render("1-4")+common.FooterDescStyle.Render(":panel"))
 	parts = append(parts, common.FooterKeyStyle.Render("Tab")+common.FooterDescStyle.Render(":cycle"))
 	parts = append(parts, common.FooterKeyStyle.Render("?")+common.FooterDescStyle.Render(":help"))
 	parts = append(parts, common.FooterKeyStyle.Render("q")+common.FooterDescStyle.Render(":quit"))

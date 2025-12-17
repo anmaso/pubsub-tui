@@ -38,7 +38,9 @@ func (m Model) View() string {
 
 	// Main content area
 	if m.loading {
-		content.WriteString(common.MutedText.Render("Loading subscriptions..."))
+		content.WriteString(m.spinner.View())
+		content.WriteString(" ")
+		content.WriteString(common.LogNetworkStyle.Render("Loading subscriptions..."))
 	} else if m.loadError != nil {
 		content.WriteString(common.LogErrorStyle.Render(fmt.Sprintf("Error: %v", m.loadError)))
 	} else if len(m.allSubscriptions) == 0 {
