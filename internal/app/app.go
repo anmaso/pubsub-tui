@@ -74,6 +74,7 @@ func (m Model) Init() tea.Cmd {
 		m.loadTopics(),
 		m.loadSubscriptions(),
 		publisher.LoadFiles(),
+		publisher.StartFileWatch(""), // Watch current directory for JSON file changes
 		m.topics.SpinnerTickCmd(),
 		m.subscriptions.SpinnerTickCmd(),
 		func() tea.Msg {

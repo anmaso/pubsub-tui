@@ -7,6 +7,7 @@ import (
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
+	"github.com/fsnotify/fsnotify"
 )
 
 // FileItem implements list.Item for displaying JSON files
@@ -49,6 +50,10 @@ type Model struct {
 	statusError bool   // Whether status is an error
 
 	publishing bool // Whether a publish is in progress
+
+	// File watcher for live directory updates
+	watcher  *fsnotify.Watcher
+	watchDir string
 }
 
 // New creates a new publisher panel model
@@ -144,8 +149,14 @@ func (m Model) TargetTopic() string {
 	return m.targetTopic
 }
 
-// SetFiles updates the list of JSON files
+// SetFiles updates the list of JSON files, preserving selection when possible
 func (m *Model) SetFiles(files []utils.JSONFile) {
+	// Remember the previously selected file path
+	var previousPath string
+	if m.selectedFile != nil {
+		previousPath = m.selectedFile.Path
+	}
+
 	m.allFiles = files
 
 	var items []list.Item
@@ -159,9 +170,29 @@ func (m *Model) SetFiles(files []utils.JSONFile) {
 
 	m.fileList.SetItems(items)
 
-	// Auto-select first file
-	if len(files) > 0 && m.selectedFile == nil {
+	// Try to restore previous selection
+	if previousPath != "" {
+		for i := range files {
+			if files[i].Path == previousPath {
+				// Found the previously selected file - restore selection
+				m.fileList.Select(i)
+				m.selectFile(&files[i])
+				return
+			}
+		}
+	}
+
+	// Previous selection not found or didn't exist
+	if len(files) > 0 {
+		// Select the first file
+		m.fileList.Select(0)
 		m.selectFile(&files[0])
+	} else {
+		// No files available - clear selection
+		m.selectedFile = nil
+		m.fileContent = ""
+		m.previewContent = ""
+		m.preview.SetContent("")
 	}
 }
 
@@ -244,4 +275,12 @@ func (m Model) GetFocusArea() FocusArea {
 // IsInputActive returns whether an input field is active
 func (m Model) IsInputActive() bool {
 	return m.focusArea == FocusVariables
+}
+
+// StopFileWatch closes the file watcher if it's running
+func (m *Model) StopFileWatch() {
+	if m.watcher != nil {
+		m.watcher.Close()
+		m.watcher = nil
+	}
 }

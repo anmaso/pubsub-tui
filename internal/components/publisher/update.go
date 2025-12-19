@@ -1,11 +1,15 @@
 package publisher
 
 import (
+	"os"
+	"strings"
+
 	"github.com/anmaso/pubsub-tui/internal/components/common"
 	"github.com/anmaso/pubsub-tui/internal/utils"
 
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/fsnotify/fsnotify"
 )
 
 // FilesLoadedMsg is sent when JSON files are loaded
@@ -24,6 +28,24 @@ type PublishRequestMsg struct {
 type PublishResultMsg struct {
 	MessageID string
 	Err       error
+}
+
+// FileWatchStartedMsg is sent when the file watcher is initialized
+type FileWatchStartedMsg struct {
+	Watcher *fsnotify.Watcher
+	Dir     string
+	Err     error
+}
+
+// FileEventMsg is sent when a file system event occurs
+type FileEventMsg struct {
+	Name string
+	Op   fsnotify.Op
+}
+
+// FileWatchErrorMsg is sent when the file watcher encounters an error
+type FileWatchErrorMsg struct {
+	Err error
 }
 
 // Update handles messages for the publisher panel
@@ -64,6 +86,45 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	case common.TopicSelectedMsg:
 		m.SetTargetTopic(msg.TopicName)
 		return m, nil
+
+	case FileWatchStartedMsg:
+		if msg.Err != nil {
+			// Non-fatal: log and continue without watching
+			return m, func() tea.Msg {
+				return common.Warning("File watcher failed: " + msg.Err.Error())
+			}
+		}
+		m.watcher = msg.Watcher
+		m.watchDir = msg.Dir
+		// Start listening for events
+		return m, WaitForFileEvent(msg.Watcher)
+
+	case FileEventMsg:
+		// Check if this is a JSON file
+		if isJSONFile(msg.Name) {
+			// Reload files on any relevant operation
+			if msg.Op&(fsnotify.Create|fsnotify.Write|fsnotify.Remove|fsnotify.Rename) != 0 {
+				return m, tea.Batch(
+					LoadFiles(),
+					WaitForFileEvent(m.watcher),
+				)
+			}
+		}
+		// Continue waiting for more events
+		if m.watcher != nil {
+			return m, WaitForFileEvent(m.watcher)
+		}
+		return m, nil
+
+	case FileWatchErrorMsg:
+		// Non-fatal: log and continue watching
+		cmds = append(cmds, func() tea.Msg {
+			return common.Warning("File watcher error: " + msg.Err.Error())
+		})
+		if m.watcher != nil {
+			cmds = append(cmds, WaitForFileEvent(m.watcher))
+		}
+		return m, tea.Batch(cmds...)
 	}
 
 	// Pass other messages to sub-components
@@ -218,6 +279,67 @@ func LoadFiles() tea.Cmd {
 		files, err := utils.ListJSONFiles("")
 		return FilesLoadedMsg{Files: files, Err: err}
 	}
+}
+
+// StartFileWatch creates a command to start watching a directory for file changes
+func StartFileWatch(dir string) tea.Cmd {
+	return func() tea.Msg {
+		// Resolve directory
+		if dir == "" {
+			var err error
+			dir, err = os.Getwd()
+			if err != nil {
+				return FileWatchStartedMsg{Err: err}
+			}
+		}
+
+		// Create watcher
+		watcher, err := fsnotify.NewWatcher()
+		if err != nil {
+			return FileWatchStartedMsg{Err: err}
+		}
+
+		// Add directory to watch
+		err = watcher.Add(dir)
+		if err != nil {
+			watcher.Close()
+			return FileWatchStartedMsg{Err: err}
+		}
+
+		return FileWatchStartedMsg{
+			Watcher: watcher,
+			Dir:     dir,
+		}
+	}
+}
+
+// WaitForFileEvent creates a command that waits for file system events
+func WaitForFileEvent(w *fsnotify.Watcher) tea.Cmd {
+	if w == nil {
+		return nil
+	}
+	return func() tea.Msg {
+		select {
+		case event, ok := <-w.Events:
+			if !ok {
+				return nil // Watcher closed
+			}
+			return FileEventMsg{
+				Name: event.Name,
+				Op:   event.Op,
+			}
+		case err, ok := <-w.Errors:
+			if !ok {
+				return nil // Watcher closed
+			}
+			return FileWatchErrorMsg{Err: err}
+		}
+	}
+}
+
+// isJSONFile checks if a filename ends with .json (case-insensitive)
+func isJSONFile(name string) bool {
+	return strings.HasSuffix(strings.ToLower(name), ".json")
 }
 
 // Key bindings

@@ -37,6 +37,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch {
 		case key.Matches(msg, keys.Quit):
 			m.stopSubscription()
+			m.publisher.StopFileWatch()
 			return m, tea.Quit
 
 		case key.Matches(msg, keys.Help):
@@ -283,6 +284,27 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		cmds = append(cmds, m.loadSubscriptions())
 
 	case publisher.FilesLoadedMsg:
+		var cmd tea.Cmd
+		m.publisher, cmd = m.publisher.Update(msg)
+		if cmd != nil {
+			cmds = append(cmds, cmd)
+		}
+
+	case publisher.FileWatchStartedMsg:
+		var cmd tea.Cmd
+		m.publisher, cmd = m.publisher.Update(msg)
+		if cmd != nil {
+			cmds = append(cmds, cmd)
+		}
+
+	case publisher.FileEventMsg:
+		var cmd tea.Cmd
+		m.publisher, cmd = m.publisher.Update(msg)
+		if cmd != nil {
+			cmds = append(cmds, cmd)
+		}
+
+	case publisher.FileWatchErrorMsg:
 		var cmd tea.Cmd
 		m.publisher, cmd = m.publisher.Update(msg)
 		if cmd != nil {
