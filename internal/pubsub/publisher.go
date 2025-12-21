@@ -37,3 +37,5 @@ func (c *Client) TopicExists(ctx context.Context, topicName string) (bool, error
 	topic := c.client.Topic(topicName)
 	return topic.Exists(ctx)
 }
+
+
