@@ -121,6 +121,3 @@ func (e *ProjectNotFoundError) Error() string {
 func (e *ProjectNotFoundError) IsEmulatorMode() bool {
 	return e.emulatorMode
 }
-
-
-

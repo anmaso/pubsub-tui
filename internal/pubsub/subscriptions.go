@@ -41,11 +41,23 @@ func (c *Client) ListSubscriptions(ctx context.Context) ([]SubscriptionInfo, err
 			continue
 		}
 
+		if cfg.Topic == nil {
+			subscriptions = append(subscriptions, SubscriptionInfo{
+				Name:     extractName(sub.ID()),
+				FullName: sub.String(),
+			})
+			continue
+		}
+
+		// Safely extract topic name - avoid calling ID() if it might panic
+		topicFull := cfg.Topic.String()
+		topicName := extractName(topicFull)
+
 		subscriptions = append(subscriptions, SubscriptionInfo{
 			Name:      extractName(sub.ID()),
 			FullName:  sub.String(),
-			TopicName: extractName(cfg.Topic.ID()),
-			TopicFull: cfg.Topic.String(),
+			TopicName: topicName,
+			TopicFull: topicFull,
 		})
 	}
 
