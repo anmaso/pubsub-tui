@@ -62,7 +62,7 @@ func (m Model) renderFooter() string {
 	parts = append(parts, common.FooterKeyStyle.Render("1-4")+common.FooterDescStyle.Render(":panel"))
 	parts = append(parts, common.FooterKeyStyle.Render("Tab")+common.FooterDescStyle.Render(":cycle"))
 	parts = append(parts, common.FooterKeyStyle.Render("?")+common.FooterDescStyle.Render(":help"))
-	parts = append(parts, common.FooterKeyStyle.Render("q")+common.FooterDescStyle.Render(":quit"))
+	parts = append(parts, common.FooterKeyStyle.Render("^c")+common.FooterDescStyle.Render(":quit"))
 
 	// Panel-specific shortcuts
 	panelShortcuts := m.getPanelShortcuts()
@@ -175,7 +175,7 @@ func (m Model) renderHelpOverlay(baseView string) string {
 		"1-4         Jump to panel (Topics/Subscriptions/Publisher/Sub)",
 		"Tab         Cycle focus forward",
 		"Shift+Tab   Cycle focus backward",
-		"q           Quit application",
+		"Ctrl+C      Quit application",
 		"?           Show this help",
 		"",
 		"TOPICS PANEL (1)",

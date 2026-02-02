@@ -567,8 +567,8 @@ type keyMap struct {
 
 var keys = keyMap{
 	Quit: key.NewBinding(
-		key.WithKeys("q", "ctrl+c"),
-		key.WithHelp("q", "quit"),
+		key.WithKeys("ctrl+c"),
+		key.WithHelp("^c", "quit"),
 	),
 	Tab: key.NewBinding(
 		key.WithKeys("tab"),
