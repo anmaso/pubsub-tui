@@ -52,25 +52,49 @@ type Model struct {
 	// Selected state
 	selectedTopic        string
 	selectedSubscription string
+
+	// CLI initial selections
+	initialTopic string
+	initialSub   *pubsub.SubscriptionInfo
+}
+
+// Options holds CLI flags passed at startup
+type Options struct {
+	InitialTopic      string
+	InitialSub        *pubsub.SubscriptionInfo
+	TopicsFilter      string
+	SubscriptionFilter string
 }
 
 // New creates a new application model
-func New(client *pubsub.Client, projectID string) Model {
+func New(client *pubsub.Client, projectID string, opts Options) Model {
+	topicsModel := topics.New()
+	if opts.TopicsFilter != "" {
+		topicsModel.SetFilterText(opts.TopicsFilter)
+	}
+
+	subsModel := subscriptions.New()
+	if opts.SubscriptionFilter != "" {
+		subsModel.SetFilterText(opts.SubscriptionFilter)
+	}
+
 	return Model{
 		client:        client,
 		projectID:     projectID,
-		topics:        topics.New(),
-		subscriptions: subscriptions.New(),
+		topics:        topicsModel,
+		subscriptions: subsModel,
 		publisher:     publisher.New(),
 		subscriber:    subscriber.New(),
 		activity:      activity.New(),
 		focus:         FocusTopics,
+		initialTopic:  opts.InitialTopic,
+		initialSub:    opts.InitialSub,
 	}
 }
 
 // Init initializes the application
 func (m Model) Init() tea.Cmd {
-	return tea.Batch(
+	cmds := []tea.Cmd{
 		m.loadTopics(),
 		m.loadSubscriptions(),
 		publisher.LoadFiles(),
@@ -83,7 +107,21 @@ func (m Model) Init() tea.Cmd {
 		func() tea.Msg {
 			return common.Network("Connected to project: " + m.projectID)
 		},
-	)
+	}
+
+	// Immediately connect to initial subscription (already validated)
+	if m.initialSub != nil {
+		sub := m.initialSub
+		cmds = append(cmds, func() tea.Msg {
+			return common.SubscriptionSelectedMsg{
+				SubscriptionName: sub.Name,
+				SubscriptionFull: sub.FullName,
+				TopicName:        sub.TopicName,
+			}
+		})
+	}
+
+	return tea.Batch(cmds...)
 }
 
 // loadTopics loads topics from GCP

@@ -270,6 +270,13 @@ func (m Model) SpinnerTickCmd() tea.Cmd {
 	return m.spinner.Tick
 }
 
+// SetFilterText sets the filter text and applies it
+func (m *Model) SetFilterText(text string) {
+	m.filterText = text
+	m.filterInput.SetValue(text)
+	m.applyFilter()
+}
+
 // applyFilter filters the subscriptions based on current filters
 func (m *Model) applyFilter() {
 	var items []list.Item

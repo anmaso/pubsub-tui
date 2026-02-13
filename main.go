@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+	"flag"
 	"fmt"
 	"os"
 
@@ -10,7 +12,21 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
+var version = "dev"
+
 func main() {
+	topic := flag.String("topic", "", "initial topic to select on startup")
+	subscription := flag.String("subscription", "", "initial subscription to connect on startup")
+	topicsFilter := flag.String("topic-filter", "", "initial regex filter for topics list")
+	subscriptionFilter := flag.String("subscription-filter", "", "initial regex filter for subscriptions list")
+	showVersion := flag.Bool("version", false, "print version and exit")
+	flag.Parse()
+
+	if *showVersion {
+		fmt.Println("pubsub-tui " + version)
+		os.Exit(0)
+	}
+
 	emulatorMode := pubsub.IsEmulatorEnabled()
 
 	// Verify GCP credentials and project before starting TUI
@@ -48,6 +64,18 @@ func main() {
 	}
 	defer client.Close()
 
+	// Validate --subscription flag before starting TUI
+	var initialSub *pubsub.SubscriptionInfo
+	if *subscription != "" {
+		fmt.Fprintf(os.Stderr, "Trying to connect to subscription %q...\n", *subscription)
+		info, err := client.GetSubscriptionInfo(context.Background(), *subscription)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			os.Exit(1)
+		}
+		initialSub = info
+	}
+
 	// Print startup info
 	if emulatorMode {
 		fmt.Fprintf(os.Stderr, "Connecting to Pub/Sub emulator at %s...\n", pubsub.GetEmulatorHost())
@@ -55,7 +83,12 @@ func main() {
 
 	// Initialize and run the TUI application
 	p := tea.NewProgram(
-		app.New(client, projectID),
+		app.New(client, projectID, app.Options{
+			InitialTopic:       *topic,
+			InitialSub:         initialSub,
+			TopicsFilter:       *topicsFilter,
+			SubscriptionFilter: *subscriptionFilter,
+		}),
 		tea.WithAltScreen(),
 		tea.WithMouseCellMotion(),
 	)

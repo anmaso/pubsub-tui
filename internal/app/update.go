@@ -104,6 +104,15 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			cmds = append(cmds, func() tea.Msg {
 				return common.Success(fmt.Sprintf("Loaded %d topics", len(msg.Topics)))
 			})
+
+			// Auto-select initial topic from CLI flag
+			if m.initialTopic != "" {
+				topicName := m.initialTopic
+				m.initialTopic = ""
+				cmds = append(cmds, func() tea.Msg {
+					return common.TopicSelectedMsg{TopicName: topicName}
+				})
+			}
 		}
 
 	case common.SubscriptionsLoadedMsg:

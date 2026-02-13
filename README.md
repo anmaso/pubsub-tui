@@ -129,6 +129,42 @@ The application will display a message indicating it's connecting to the emulato
 
 ## Usage
 
+### Command Line Flags
+
+```
+Usage: pubsub-tui [flags]
+
+Flags:
+  --topic string                 Pre-select a topic on startup
+  --subscription string          Connect to a subscription on startup (validates
+                                 the subscription exists before launching the UI)
+  --topic-filter string          Apply an initial regex filter to the topics list
+  --subscription-filter string   Apply an initial regex filter to the subscriptions list
+  --version                      Print version and exit
+  --help                         Show usage information
+```
+
+#### Examples
+
+```bash
+# Start with a topic pre-selected
+./pubsub-tui --topic my-topic
+
+# Start already connected to a subscription and receiving messages
+./pubsub-tui --subscription my-sub
+
+# Combine both
+./pubsub-tui --topic my-topic --subscription my-sub
+
+# Start with filtered views
+./pubsub-tui --topic-filter "order.*" --subscription-filter "prod-"
+
+# Check version
+./pubsub-tui --version
+```
+
+The `--subscription` flag validates the subscription exists before starting the UI. If it does not exist, the application prints an error and exits.
+
 ### Starting the Application
 
 ```bash

@@ -64,6 +64,35 @@ func (c *Client) ListSubscriptions(ctx context.Context) ([]SubscriptionInfo, err
 	return subscriptions, nil
 }
 
+// GetSubscriptionInfo retrieves info for a single subscription by name
+func (c *Client) GetSubscriptionInfo(ctx context.Context, subscriptionName string) (*SubscriptionInfo, error) {
+	sub := c.client.Subscription(subscriptionName)
+	exists, err := sub.Exists(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to check subscription: %w", err)
+	}
+	if !exists {
+		return nil, fmt.Errorf("subscription %q does not exist", subscriptionName)
+	}
+
+	cfg, err := sub.Config(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get subscription config: %w", err)
+	}
+
+	info := &SubscriptionInfo{
+		Name:     extractName(sub.ID()),
+		FullName: sub.String(),
+	}
+
+	if cfg.Topic != nil {
+		info.TopicFull = cfg.Topic.String()
+		info.TopicName = extractName(info.TopicFull)
+	}
+
+	return info, nil
+}
+
 // CreateSubscription creates a new subscription for the given topic
 func (c *Client) CreateSubscription(ctx context.Context, subscriptionID, topicID string) error {
 	if err := validateResourceID(subscriptionID); err != nil {
